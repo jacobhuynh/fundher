@@ -19,7 +19,7 @@ async function get_scholarships() {
     await page.setViewport({ width: 1920, height: 1080 });
     let scholorship_data = [];
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 283; i++) {
         console.log();
         // each page has 20 scholarships, so calculate the page number based on the index
         let pageNumber = Math.floor(i / 20) + 1;
@@ -282,7 +282,7 @@ async function get_scholarships() {
     }
 
     // write scholarship data to a json file
-    fs.writeFileSync('scholarships2.json', JSON.stringify(scholorship_data, null, 2));
+    fs.writeFileSync('scholarships.json', JSON.stringify(scholorship_data, null, 2));
     console.log('done');
 
     // await browser.close();
