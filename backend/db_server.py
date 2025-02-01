@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 
+# To start: uvicorn main:app --reload
+
 # Initialize FastAPI app
 app = FastAPI()
 
