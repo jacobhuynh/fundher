@@ -32,3 +32,5 @@ if index_name not in existing_indexes:
     print(f"Index '{index_name}' created successfully.")
 else:
     print(f"Index '{index_name}' already exists.")
+    
+    print("hi")
