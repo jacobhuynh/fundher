@@ -1,36 +1,28 @@
-from pinecone.grpc import PineconeGRPC as Pinecone
-from pinecone import ServerlessSpec
-from dotenv import load_dotenv
-import os
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import Optional
 
-# Load environment variables
-load_dotenv()
+# Initialize FastAPI app
+app = FastAPI()
 
-# Initialize Pinecone with API key
-pinecone_key = os.getenv('pinecone_key')
-pc = Pinecone(api_key=pinecone_key)
+# Sample model for POST requests
+class Item(BaseModel):
+    name: str
+    description: Optional[str] = None
+    price: float
+    on_offer: bool
 
-# Define index parameters
-index_name = "fundher"
-index_dimension = 1536
-index_metric = "cosine"
+# Basic root route
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to FastAPI!"}
 
-# Check if the index already exists
-existing_indexes = pc.list_indexes()
+# Sample GET route with a path parameter
+@app.get("/items/{item_id}")
+def read_item(item_id: int, query_param: Optional[str] = None):
+    return {"item_id": item_id, "query_param": query_param}
 
-if index_name not in existing_indexes:
-    # Create the index only if it doesn't exist
-    pc.create_index(
-        name=index_name,
-        dimension=index_dimension,
-        metric=index_metric,
-        spec=ServerlessSpec(
-            cloud="aws",
-            region="us-east-1"
-        )
-    )
-    print(f"Index '{index_name}' created successfully.")
-else:
-    print(f"Index '{index_name}' already exists.")
-    
-    print("hi")
+# Sample POST route
+@app.post("/items/")
+def create_item(item: Item):
+    return {"item": item}
