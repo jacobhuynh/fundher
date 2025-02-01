@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer-extra");
+const fs = require('fs');
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 
 puppeteer.use(StealthPlugin());
@@ -8,8 +9,8 @@ async function get_scholarships() {
         headless: false,
         // Set default viewport for all pages
         defaultViewport: {
-          width: 1920,
-          height: 1080,
+            width: 1920,
+            height: 1080,
         },
         // Optional: Force window size (may include browser UI elements)
         args: ['--window-size=1920,1080']
@@ -18,7 +19,7 @@ async function get_scholarships() {
     await page.setViewport({ width: 1920, height: 1080 });
     let scholorship_data = [];
 
-    for (let i = 0; i < 283; i++) {
+    for (let i = 0; i < 20; i++) {
         console.log();
         // each page has 20 scholarships, so calculate the page number based on the index
         let pageNumber = Math.floor(i / 20) + 1;
@@ -102,26 +103,26 @@ async function get_scholarships() {
                 XPathResult.FIRST_ORDERED_NODE_TYPE,
                 null
             ).singleNodeValue;
-        
+
             if (!startElement) return 'Scholarship Overview section not found';
-        
+
             // Find the FIRST ending div after the overview
             let endElement = startElement.nextElementSibling;
             while (endElement && !endElement.classList.contains('re-scholarship-main-line')) {
                 endElement = endElement.nextElementSibling;
             }
-        
+
             if (!endElement) return 'End marker not found';
-        
+
             let content = [];
             let currentNode = startElement.nextElementSibling;
-        
+
             // Collect elements between start and first end marker
             while (currentNode && currentNode !== endElement) {
                 // Process all child nodes in order
                 const nodes = Array.from(currentNode.childNodes);
                 let currentText = '';
-                
+
                 for (const node of nodes) {
                     if (node.nodeType === Node.TEXT_NODE) {
                         // Handle text nodes
@@ -132,7 +133,7 @@ async function get_scholarships() {
                             content.push(currentText.replace(/\s+/g, ' ').trim());
                             currentText = '';
                         }
-                        
+
                         if (node.tagName === 'A') {
                             // Handle links
                             const linkText = node.textContent.trim();
@@ -147,15 +148,15 @@ async function get_scholarships() {
                         }
                     }
                 }
-        
+
                 // Add any remaining text
                 if (currentText.length > 0) {
                     content.push(currentText.replace(/\s+/g, ' ').trim());
                 }
-        
+
                 currentNode = currentNode.nextElementSibling;
             }
-        
+
             return content.join('\n');
         });
 
@@ -168,34 +169,34 @@ async function get_scholarships() {
                 XPathResult.FIRST_ORDERED_NODE_TYPE,
                 null
             ).singleNodeValue;
-        
+
             if (!eligibilityHeader) return 'Eligibility section not found';
-        
+
             const results = [];
-            
+
             // Get description paragraph
             const description = eligibilityHeader.nextElementSibling?.textContent?.trim();
             if (description) results.push(description);
-        
+
             // Get requirements list
             const requirementsContainer = document.querySelector('.re-scholarship-main-lists');
             if (requirementsContainer) {
                 Array.from(requirementsContainer.querySelectorAll('.re-scholarship-main-lists-single')).forEach(div => {
                     const label = div.querySelector('strong')?.textContent?.trim().toUpperCase();
                     const value = div.querySelector('p')?.textContent?.trim();
-                    
+
                     if (label && value) {
                         results.push(`${label}: ${value}`);
                     }
                 });
             }
-        
+
             return results.join('\n\n');
         });
 
         const applicationInfo = await page.evaluate(() => {
             const results = [];
-            
+
             // Find application information header
             const appHeader = document.evaluate(
                 `//h4[contains(., "Application information")]`,
@@ -204,29 +205,53 @@ async function get_scholarships() {
                 XPathResult.FIRST_ORDERED_NODE_TYPE,
                 null
             ).singleNodeValue;
-        
+
             if (!appHeader) return 'No application information found';
-        
+
             // Get general application text
             const generalText = appHeader.nextElementSibling?.textContent?.trim();
             if (generalText) results.push(generalText);
-        
+
             // Check for essay prompt section
             const essaySection = document.querySelector('.re-scholarship-main-quick-single');
             if (essaySection) {
                 const promptTitle = essaySection.querySelector('p:first-child')?.textContent?.trim();
                 const promptText = essaySection.querySelector('p:nth-child(2)')?.textContent?.trim();
                 const wordLimit = essaySection.querySelector('p:last-child')?.textContent?.trim();
-        
+
                 if (promptTitle && promptText) {
                     results.push(
-                        `\n${promptTitle}:\n${promptText}` + 
+                        `\n${promptTitle}:\n${promptText}` +
                         (wordLimit ? `\n${wordLimit}` : '')
                     );
                 }
             }
-        
+
             return results.join('\n');
+        });
+
+        const requirements = await page.evaluate(() => {
+            const results = [];
+            // Find the H4 containing "Application information"
+            const appInfoHeader = Array.from(document.querySelectorAll('h4'))
+                .find(h4 => h4.textContent.includes('Application information'));
+
+            if (!appInfoHeader) return []; // Exit if header not found
+
+            // Get the NEXT SIBLING DIV with class re-scholarship-main-lists
+            const listsDiv = appInfoHeader.nextElementSibling?.nextElementSibling; // Skip empty <p>
+
+            if (listsDiv && listsDiv.classList.contains('re-scholarship-main-lists')) {
+                // Extract all list items
+                const listItems = listsDiv.querySelectorAll('.re-scholarship-main-lists-single');
+
+                listItems.forEach(item => {
+                    const text = item.querySelector('p')?.textContent?.trim();
+                    if (text) results.push(text);
+                });
+            }
+
+            return results;
         });
 
         console.log("Title:", titleText);
@@ -237,28 +262,30 @@ async function get_scholarships() {
         console.log("Scholarship Info:\n", scholarshipInfo);
         console.log("Eligibility Information:\n", eligibilityInfo);
         console.log("Application Information:\n", applicationInfo);
+        console.log('Application Requirements:', requirements);
 
         // create an object for all these fields and push it to the array scholarship_data
         let scholarship = {
             title: titleText,
+            link: href,
             offeredBy: offeredByText,
             amount: amount,
             gradeLevel: gradeLevel,
             deadline: deadline,
             scholarshipInfo: scholarshipInfo,
             eligibilityInfo: eligibilityInfo,
-            applicationInfo: applicationInfo
+            applicationInfo: applicationInfo,
+            requirements: requirements
         }
 
         scholorship_data.push(scholarship);
     }
 
-    // close
-    // await browser.close();
     // write scholarship data to a json file
-    const fs = require('fs');
-    fs.writeFileSync('scholarships.json', JSON.stringify(scholorship_data, null, 2));
+    fs.writeFileSync('scholarships2.json', JSON.stringify(scholorship_data, null, 2));
     console.log('done');
+
+    // await browser.close();
 }
 
 get_scholarships()
