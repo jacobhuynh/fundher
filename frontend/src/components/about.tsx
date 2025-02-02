@@ -4,12 +4,12 @@ const stats = [
   {
     id: 1,
     stat: "200+",
-    description: "up to date scholarships available.",
+    description: "up to date opportunities available.",
   },
   {
     id: 2,
     stat: "$500,000+",
-    description: "dollars in scholarships awarded.",
+    description: "dollars in funding found.",
   },
   {
     id: 3,
