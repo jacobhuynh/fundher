@@ -26,8 +26,8 @@ export function Dashboard() {
     // when this componenet loads, make api call to get scholarships
     const [recommendedScholarships, setRecommendedScholarships] = useState<Scholarship[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    let i = 0;
+    const [error, setError] = useState('');
+    const [i, setI] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,8 +39,8 @@ export function Dashboard() {
                 const result = await response.json();
                 setRecommendedScholarships(result.matches);
             } catch (error) {
-                console.log('yo');
-                setError(error.message);
+                console.log(error);
+                setError('error');
             } finally {
                 setLoading(false);
             }
@@ -51,80 +51,100 @@ export function Dashboard() {
 
     function userInterested() {
         console.log("User is interested in this scholarship");
-        i += 1;
+        setI(i + 1);
     }
 
     function userNotInterested() {
         console.log("User is not interested in this scholarship");
-        i += 1;
+        setI(i + 1);
     }
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
+    if (loading) return (<div className="h-screen border-b-2 border-gray-300 flex justify-center items-center inset-0 bg-gradient-to-br from-purple-100 to-indigo-200">
+        <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignContent: "center", alignItems: "center", gap: "3vh"}}>
+            <CircularProgress variant="solid" sx={{ '--CircularProgress-progressColor': "#A020F0", '--CircularProgress-trackColor': "#CBC3E3" }} size="lg" />
+            <p>Loading...</p>
+        </div>
+    </div>);
+    if (error) return (<div className="h-screen border-b-2 border-gray-300 flex justify-center items-center inset-0 bg-gradient-to-br from-purple-100 to-indigo-200"><p>Error: {error}</p></div>);
     return (
-        <div className="h-screen border-b-2 border-gray-300 flex justify-center items-center inset-0 bg-gradient-to-br from-purple-100 to-indigo-200">
-            <Card sx={{ width: "100vh", height: "50vh", maxWidth: '100%', boxShadow: 'lg', borderRadius: "24px" }}>
-                <CardContent sx={{ alignItems: 'center', textAlign: 'center' }}>
-                    <Typography level="title-lg" sx={{ marginBottom: '' }}>{recommendedScholarships[i].metadata.title}</Typography>
-                    <Typography level="body-sm" sx={{ }}>{recommendedScholarships[i].metadata.offered_by}</Typography>
-                    <div style={{ flexDirection: "row", display: "flex", alignItems: "center", height: "100%", width: "95%" }}>
-                        <div style={{ width: "20%", marginRight: "5%" }}>
-                            <CircularProgress variant="solid" size="lg" value={recommendedScholarships[i].score * 100} determinate sx={{ '--CircularProgress-progressColor': "#A020F0", '--CircularProgress-trackColor': "#CBC3E3" }} />
-                            <p>{Math.round(recommendedScholarships[i].score * 100)}% Match</p>
-                        </div>
-                        <CardContent sx={{ width: '50%' }}>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "1vh", justifyContent: "center", alignItems: "left", height: "100%" }}>
-                                <div style={{ display: "flex", flexDirection: "row", gap: "0.3vw" }}>
-                                    <Image src="/graduation-cap-emoji-clipart-xl.png" alt="scholarship" width={25} height={25} />
-                                    <strong>Grade Level</strong>
-                                    <p>{recommendedScholarships[i].metadata.grade_level}</p>
-                                </div>
-                                <div style={{ display: "flex", flexDirection: "row", gap: "0.3vw" }}>
-                                    <Image src="/1f4b2.png" alt="scholarship" width={25} height={25} />
-                                    <strong>Amount</strong>
-                                    <p>{recommendedScholarships[i].metadata.amount}</p>
-                                </div>
-                                <div style={{ display: "flex", flexDirection: "row", gap: "0.3vw" }}>
-                                    <Image src="/spiral-calendar-emoji-2048x2047-wckuso5j.png" alt="scholarship" width={25} height={25} />
-                                    <strong>Deadline</strong>
+        <div>
+            {/* <div className='border-b-2 border-gray-300 flex justify-center items-center inset-0 bg-gradient-to-br from-purple-100 to-indigo-200'>
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <Link href="#underline" underline="always">
+                    Always
+                </Link>
+                <Link href="#underline" underline="hover">
+                    Hover
+                </Link>
+                <Link href="#underline" underline="none">
+                    None
+                </Link>
+                </Box>
+            </div> */}
+            <div className="h-screen border-b-2 border-gray-300 flex justify-center items-center inset-0 bg-gradient-to-br from-purple-100 to-indigo-200">
+                <Card sx={{ width: "100vh", height: "50vh", maxWidth: '100%', boxShadow: 'lg', borderRadius: "24px" }}>
+                    <CardContent sx={{ alignItems: 'center', textAlign: 'center' }}>
+                        <Typography level="title-lg" sx={{ marginTop: '1vh' }}>{recommendedScholarships[i].metadata.title}</Typography>
+                        <Typography level="body-sm" sx={{ }}>{recommendedScholarships[i].metadata.offered_by}</Typography>
+                        <div style={{ flexDirection: "row", display: "flex", alignItems: "center", height: "100%", width: "95%" }}>
+                            <div style={{ width: "20%", marginRight: "5%" }}>
+                                <CircularProgress variant="solid" size="lg" value={recommendedScholarships[i].score * 100} determinate sx={{ '--CircularProgress-progressColor': "#A020F0", '--CircularProgress-trackColor': "#CBC3E3" }} />
+                                <p>{Math.round(recommendedScholarships[i].score * 100)}% Match</p>
+                            </div>
+                            <CardContent sx={{ width: '50%', alignItems: "left" }}>
+                                <div style={{ display: "flex", flexDirection: "column", gap: "1vh", justifyContent: "flex-start", alignItems: "left", height: "100%", textAlign: "left"}}>
+                                    <div style={{ display: "flex", flexDirection: "row", gap: "0.3vw" }}>
+                                        <Image src="/graduation-cap-emoji-clipart-xl.png" alt="scholarship" width={25} height={25} />
+                                        <strong>Grade Level</strong>
+                                    </div>
+                                    <p style={{marginBottom: "2vh"}}>{recommendedScholarships[i].metadata.grade_level}</p>
+                                    <div style={{ display: "flex", flexDirection: "row", gap: "0.3vw" }}>
+                                        <Image src="/1f4b2.png" alt="scholarship" width={25} height={25} />
+                                        <strong>Amount</strong>
+                                    </div>
+                                    <p style={{marginBottom: "2vh"}}>{recommendedScholarships[i].metadata.amount}</p>
+                                    <div style={{ display: "flex", flexDirection: "row", gap: "0.3vw" }}>
+                                        <Image src="/spiral-calendar-emoji-2048x2047-wckuso5j.png" alt="scholarship" width={25} height={25} />
+                                        <strong>Deadline</strong>
+                                    </div>
                                     <p>{recommendedScholarships[i].metadata.deadline}</p>
                                 </div>
+                            </CardContent>
+                            <div style={{ width: "40%", textAlign: "left"}}>
+                                <strong>Requirements</strong>
+                                <List marker='disc' sx={{ alignItems: 'start', display: 'flex', flexDirection: 'column', justifyContent: 'left', gap: '0vh' }}>
+                                    {/* map through the requirements and display them if it's not empty, otherwise make a list item say no requirements*/}
+                                    {recommendedScholarships[i].metadata.requirements.length > 0 ? recommendedScholarships[i].metadata.requirements.map((requirement: string) => (
+                                        <ListItem key={requirement}>{requirement}</ListItem>
+                                    )) : <ListItem>No requirements</ListItem>}
+                                </List>
                             </div>
-                        </CardContent>
-                        <div style={{ width: "40%" }}>
-                            <strong>Requirements</strong>
-                            <List marker='disc' sx={{ alignItems: 'start', display: 'flex', flexDirection: 'column', justifyContent: 'left', gap: '0vh' }}>
-                                {/* map through the requirements and display them */}
-                                {recommendedScholarships[i].metadata.requirements.map((requirement) => {
-                                    return <ListItem key={requirement}>{requirement}</ListItem>
-                                })}
-                            </List>
                         </div>
-                    </div>
-                </CardContent>
-                <CardOverflow sx={{ bgcolor: 'background.level1' }}>
-                    <CardActions buttonFlex="1">
-                        <ButtonGroup variant="outlined" sx={{ bgcolor: 'background.surface' }}>
-                            <Button variant="soft" sx={{
-                                backgroundColor: "#DDE7EE",
-                                '&:hover': {
-                                    backgroundColor: '#d7dbdd',
-                                },
-                            }} onClick={userNotInterested}>Not Interested</Button>
-                            <Button variant='soft' sx={{
-                                backgroundColor: '#CF9FFF', // Background color
-                                // color: "#FFFFFF",
-                                '&:hover': {
-                                    backgroundColor: '#ce93d8', // Background on hover
-                                },
-                                '&:active': {
-                                    color: '#6D178F', // Background on click
-                                },
-                            }} onClick={userInterested}>Interested</Button>
-                        </ButtonGroup>
-                    </CardActions>
-                </CardOverflow>
-            </Card>
+                    </CardContent>
+                    <CardOverflow sx={{ bgcolor: 'background.level1' }}>
+                        <CardActions buttonFlex="1">
+                            <ButtonGroup variant="outlined" sx={{ bgcolor: 'background.surface' }}>
+                                <Button variant="soft" sx={{
+                                    backgroundColor: "#DDE7EE",
+                                    '&:hover': {
+                                        backgroundColor: '#d7dbdd',
+                                    },
+                                }} onClick={userNotInterested}>Not Interested</Button>
+                                <Button variant='soft' sx={{
+                                    backgroundColor: '#CF9FFF', // Background color
+                                    // color: "#FFFFFF",
+                                    '&:hover': {
+                                        backgroundColor: '#ce93d8', // Background on hover
+                                    },
+                                    '&:active': {
+                                        color: '#6D178F', // Background on click
+                                    },
+                                }} onClick={userInterested}>Interested</Button>
+                            </ButtonGroup>
+                        </CardActions>
+                    </CardOverflow>
+                </Card>
+            </div>
         </div>
     );
 }
