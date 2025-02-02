@@ -21,7 +21,7 @@ export function Hero() {
           <div className="mt-10 flex items-center gap-x-6">
             <Link href="#features">
               <div
-                className="rounded-xl shadow-lg bg-white h-14 w-48 flex items-center justify-center border border-gray-300 font-bold transform transition-transform duration-200 
+                className="rounded-xl shadow-xl bg-white h-14 w-48 flex items-center justify-center border border-gray-300 font-bold transform transition-transform duration-200 
                 hover:shadow-[0_4px_12px_rgba(99,102,241,0.4)]"
               >
                 Join Us
