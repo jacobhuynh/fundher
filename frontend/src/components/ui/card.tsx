@@ -20,7 +20,9 @@ export default function FeatureCard(props: {
         />
         <h3 className="font-bold text-3xl text-indigo-600">{props.feature}</h3>
       </div>
-      <p className="relative z-10 text-gray-700">{props.description}</p>
+      <p className="relative z-10 text-gray-700 text-center px-8">
+        {props.description}
+      </p>
     </div>
   );
 }

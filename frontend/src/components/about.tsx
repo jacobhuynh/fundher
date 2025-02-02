@@ -14,7 +14,7 @@ const stats = [
   {
     id: 3,
     stat: "95%",
-    description: "accuracy in matching candidates with scholarships.",
+    description: "accuracy in matching candidates.",
   },
 ];
 
