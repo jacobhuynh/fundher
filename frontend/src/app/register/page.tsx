@@ -62,7 +62,9 @@ export default function Register() {
         setError(result.error);
       }
       if (result && result.success) {
-        router.push("/");
+        localStorage.setItem("userEmail", submissionData.email);
+        window.dispatchEvent(new Event("storage"));
+        router.push("/dashboard");
       }
     } catch (error) {
       setError("An unexpected error occurred. Please try again.");
@@ -70,7 +72,7 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 to-indigo-300 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 to-indigo-300 pt-16 pb-8">
       <div className="max-w-2xl w-full space-y-8 bg-white bg-opacity-80 p-8 rounded-xl shadow-lg">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
