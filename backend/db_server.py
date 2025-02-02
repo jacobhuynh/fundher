@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import os
 from mongo_methods import *
 from pinecone_methods import *
+from fastapi.encoders import jsonable_encoder
 
 # To start: uvicorn db_server:app --reload
 
@@ -42,6 +43,10 @@ class UserData(BaseModel):
     interests: List[str]
     resume: Optional[bytes]  # Optional resume field
 
+class PineconeFund(BaseModel):
+    pineconeId: str
+    email: str
+
 # Status endpoint
 @app.get("/status")
 def read_root():
@@ -70,9 +75,33 @@ def add_mongo_user(user_data: UserData, db=Depends(get_db)):
     )
     return result
 
+# Route to retrieve user data
+@app.get("/get_user/{user_email}")
+def get_mongo_user(user_email: str, db=Depends(get_db)):
+    return get_user(db, user_email)
+
 # Route to query pinecone database
 @app.get("/pinecone_query/{user_email}")
 def pinecone_query(user_email: str, db=Depends(get_db)):
     mongo_result = get_user(db, user_email)
     pinecone_result = query_pinecone(mongo_result)
-    return pinecone_result
+    
+    matches = [
+        {
+            "id": match["id"],
+            "score": match["score"],
+            "metadata": match.get("metadata", {})
+        }
+        for match in pinecone_result.get("matches", [])
+    ]
+
+    return jsonable_encoder({"matches": matches})
+
+# Route to add fund to interested array
+@app.post("/pinecone_interested/")
+def pinecone_fund(pinecone_fund: PineconeFund, db=Depends(get_db)):
+    pinecone_result = add_interested(db, pinecone_fund.email, pinecone_fund.pineconeId)
+    return "Hi"
+
+    
+    
