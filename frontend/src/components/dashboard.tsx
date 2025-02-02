@@ -49,8 +49,20 @@ export function Dashboard() {
         fetchData();
     }, []); // Empty dependency array ensures it runs only once on mount
 
-    function userInterested() {
-        console.log("User is interested in this scholarship");
+    async function userInterested(id: string) {
+        console.log("User is interested in this scholarship" + id);
+        // send a post request to the backend to update the user's interested scholarships
+        const response = await fetch("http://127.0.0.1:8000/pinecone_interested", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: "hello@gmail.com",
+                pineconeId: id,
+            }),
+        });
+        console.log(response);
         setI(i + 1);
     }
 
@@ -139,7 +151,9 @@ export function Dashboard() {
                                     '&:active': {
                                         color: '#6D178F', // Background on click
                                     },
-                                }} onClick={userInterested}>Interested</Button>
+                                }} onClick={() => userInterested(recommendedScholarships[i].id)}>
+                                    Interested
+                                </Button>
                             </ButtonGroup>
                         </CardActions>
                     </CardOverflow>

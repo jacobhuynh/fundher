@@ -43,6 +43,9 @@ export function Tracker() {
                 }
                 const result = await response.json();
                 console.log(result);
+                // if (!result.interested) {
+                //     result.interested = [];
+                // }
                 setInterestedScholarships(result.interested);
             } catch (error) {
                 console.log(error);
