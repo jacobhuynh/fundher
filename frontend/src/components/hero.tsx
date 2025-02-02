@@ -16,7 +16,7 @@ export function Hero() {
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link href="/browse">
-              <div className="rounded-full bg-[#7c3aed] h-14 w-48 flex items-center justify-center text-white border-2 border-gray-300 font-bold">
+              <div className="rounded-full bg-indigo-600 h-14 w-48 flex items-center justify-center text-white border-2 border-gray-300 font-bold">
                 Join Us
               </div>
             </Link>

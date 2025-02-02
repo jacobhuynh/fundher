@@ -35,9 +35,15 @@ export function Features() {
   return (
     <section id="features" className="py-16 px-6">
       <div className="mx-auto max-w-7xl">
-        <h2 className="text-[45px] font-bold tracking-tight text-center mb-12">
-          Features
-        </h2>
+        <div className="text-center mb-12">
+          <h2 className="text-[45px] font-bold tracking-tight text-center mb-2">
+            Features
+          </h2>
+          <h3 className="text-muted-foreground">
+            Harnessing AI to Match You with the Best Scholarships—Fast, Smart,
+            and Personalized.
+          </h3>
+        </div>
         <div className="grid gap-6 grid-cols-2 grid-rows 2">
           {features.map((feature) => (
             <div key={feature.id}>

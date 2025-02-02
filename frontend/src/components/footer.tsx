@@ -1,5 +1,9 @@
-import React from "react";
+import Link from "next/link";
 
-export const footer = () => {
-  return <div>footer</div>;
-};
+export function Footer() {
+  return (
+    <div className="h-16 flex justify-center items-center text-small">
+      <div>© 2025 fundHer. All rights reserved.</div>
+    </div>
+  );
+}
