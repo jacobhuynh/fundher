@@ -203,50 +203,52 @@ export default function Tracker() {
                 <th style={{ backgroundColor: "#F0E6FF" }}>Mark as Applied</th>
               </tr>
             </thead>
-            {interestedScholarships.length > 0 ? (
-              interestedScholarships.map((scholarship: Scholarship) => (
-                <tr key={scholarship.title}>
-                  <td>{scholarship.title}</td>
-                  <td>{scholarship.offered_by}</td>
-                  <td>{scholarship.amount}</td>
-                  <td>{scholarship.deadline}</td>
-                  <td>
-                    <Link
-                      underline="always"
-                      href={scholarship.link}
-                      target="_blank"
-                    >
-                      Apply Here
-                    </Link>
-                  </td>
-                  <td>
-                    <div
-                      style={{
-                        display: "flex",
-                        width: "100%",
-                        height: "100%",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        alignContent: "center",
-                      }}
-                    >
-                      <Checkbox
-                        sx={{ marginRight: "35%" }}
-                        onChange={async () => {
-                          await sleep(500);
-                          setInterestedScholarships((prev) =>
-                            prev.filter((s) => s.title !== scholarship.title)
-                          );
-                          setAppliedScholarships((prev) => [...prev, scholarship]);
+            <tbody>
+              {interestedScholarships.length > 0 ? (
+                interestedScholarships.map((scholarship: Scholarship) => (
+                  <tr key={scholarship.title}>
+                    <td>{scholarship.title}</td>
+                    <td>{scholarship.offered_by}</td>
+                    <td>{scholarship.amount}</td>
+                    <td>{scholarship.deadline}</td>
+                    <td>
+                      <Link
+                        underline="always"
+                        href={scholarship.link}
+                        target="_blank"
+                      >
+                        Apply Here
+                      </Link>
+                    </td>
+                    <td>
+                      <div
+                        style={{
+                          display: "flex",
+                          width: "100%",
+                          height: "100%",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          alignContent: "center",
                         }}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <ListItem>No items</ListItem>
-            )}
+                      >
+                        <Checkbox
+                          sx={{ marginRight: "35%" }}
+                          onChange={async () => {
+                            await sleep(500);
+                            setInterestedScholarships((prev) =>
+                              prev.filter((s) => s.title !== scholarship.title)
+                            );
+                            setAppliedScholarships((prev) => [...prev, scholarship]);
+                          }}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <ListItem>No items</ListItem>
+              )}
+            </tbody>
           </Table>
         </TabPanel>
         <TabPanel value={1} sx={{ width: "20%" }}>
