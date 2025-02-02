@@ -41,12 +41,13 @@ export default function Tracker() {
   >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [email, setEmail] = useState(localStorage.getItem("userEmail") || "");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/get_user/hello@gmail.com"
+          "http://127.0.0.1:8000/get_user/" + email
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -65,6 +66,8 @@ export default function Tracker() {
       }
     };
 
+    const storedEmail = localStorage.getItem("userEmail") || "";
+    setEmail(storedEmail);
     fetchData();
   }, []); // Empty dependency array ensures it runs only once on mount
 
@@ -115,7 +118,7 @@ export default function Tracker() {
           height: "90%",
           backgroundColor: "#F0E6FF",
         }}
-        // className='bg-gradient-to-br from-purple-100 to-indigo-200'
+      // className='bg-gradient-to-br from-purple-100 to-indigo-200'
       >
         <TabList sx={{ width: "10%" }}>
           <Tab
@@ -230,18 +233,11 @@ export default function Tracker() {
                       <Checkbox
                         sx={{ marginRight: "35%" }}
                         onChange={async () => {
-                          // remove scholarship from interested and add to applied
                           await sleep(500);
-                          setInterestedScholarships(
-                            interestedScholarships.filter(
-                              (scholarship) =>
-                                scholarship.title !== scholarship.title
-                            )
+                          setInterestedScholarships((prev) =>
+                            prev.filter((s) => s.title !== scholarship.title)
                           );
-                          setAppliedScholarships([
-                            ...appliedScholarships,
-                            scholarship,
-                          ]);
+                          setAppliedScholarships((prev) => [...prev, scholarship]);
                         }}
                       />
                     </div>
@@ -298,16 +294,10 @@ export default function Tracker() {
                       sx={{ marginLeft: "30%" }}
                       onChange={async () => {
                         await sleep(500);
-                        setAppliedScholarships(
-                          appliedScholarships.filter(
-                            (scholarship) =>
-                              scholarship.title !== scholarship.title
-                          )
+                        setAppliedScholarships((prev) =>
+                          prev.filter((s) => s.title !== scholarship.title)
                         );
-                        setAcceptedScholarships([
-                          ...acceptedScholarships,
-                          scholarship,
-                        ]);
+                        setAcceptedScholarships((prev) => [...prev, scholarship]);
                       }}
                     />
                   </td>
@@ -316,16 +306,10 @@ export default function Tracker() {
                       sx={{ marginLeft: "30%" }}
                       onChange={async () => {
                         await sleep(500);
-                        setAppliedScholarships(
-                          appliedScholarships.filter(
-                            (scholarship) =>
-                              scholarship.title !== scholarship.title
-                          )
+                        setAppliedScholarships((prev) =>
+                          prev.filter((s) => s.title !== scholarship.title)
                         );
-                        setRejectedScholarships([
-                          ...rejectedScholarships,
-                          scholarship,
-                        ]);
+                        setRejectedScholarships((prev) => [...prev, scholarship]);
                       }}
                     />
                   </td>

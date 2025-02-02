@@ -28,6 +28,7 @@ export default function Dashboard() {
     Scholarship[]
   >([]);
   const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState(localStorage.getItem("userEmail") || "");
   const [error, setError] = useState("");
   const [i, setI] = useState(0);
 
@@ -35,7 +36,7 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/pinecone_query/hello@gmail.com"
+          "http://127.0.0.1:8000/pinecone_query/" + email
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -50,6 +51,8 @@ export default function Dashboard() {
       }
     };
 
+    const storedEmail = localStorage.getItem("userEmail") || "";
+    setEmail(storedEmail);
     fetchData();
   }, []); // Empty dependency array ensures it runs only once on mount
 
@@ -62,7 +65,7 @@ export default function Dashboard() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: "hello@gmail.com",
+        email: email,
         pineconeId: id,
       }),
     });
