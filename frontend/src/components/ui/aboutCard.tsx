@@ -9,7 +9,7 @@ export default function AboutCard(props: {
   return (
     <div
       className="relative h-40 flex flex-col p-6 rounded-xl
-                justify-center items-center bg-white text-center
+                justify-center items-center bg-white text-center shadow-lg 
                 transform transition-transform duration-200 
                 hover:shadow-[0_4px_12px_rgba(99,102,241,0.4)]"
     >

@@ -44,8 +44,8 @@ export function Features() {
             Features
           </h2>
           <h3 className="text-muted-foreground">
-            Harnessing AI to Match You with the Best Scholarships—Fast, Smart,
-            and Personalized.
+            Harnessing AI to Match You with the Best Funding Opportunities—Fast,
+            Smart, and Personalized.
           </h3>
         </div>
         <div className="grid gap-6 grid-cols-2 grid-rows 2">
