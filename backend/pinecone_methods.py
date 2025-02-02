@@ -25,10 +25,10 @@ index_dimension = 1536
 index_metric = "cosine"
 
 # Define vector upsert size
-batch_size = 1
+batch_size = 20
 
 # Method to refresh pinecone database with new json data
-def refresh_piencone(json_data):
+def refresh_pinecone(filepath):
     # Extract the names of existing indexes
     existing_indexes = [index["name"] for index in pinecone_client.list_indexes()]
 
@@ -53,29 +53,38 @@ def refresh_piencone(json_data):
         pinecone_index.delete(delete_all=True, namespace=namespace)
         print(f"Successfully deleted {namespace}.")
         
-        
-    # TODO: retrieve real data
-    json_data = '''
-    [
-        {
-            "id": "item1",
-            "text": "Scholarship opportunity for women pursuing degrees in STEM fields, offering up to $10,000 in funding.",
-            "genre": "education",
-            "url": "https://example.com/scholarship-for-women-stem",
-            "tags": ["scholarship", "women", "STEM", "education", "funding"]
-        }
-    ]
-    '''
-    data = json.loads(json_data)
-
+    try:
+        with open(filepath, "r") as file:
+            json_data = json.load(file)
+    except FileNotFoundError:   
+        print("The file was not found.")
+    except json.JSONDecodeError:
+        print("The file contains invalid JSON.")
+    
     # Define variable to hold vector embeddings
     vectors = []
-    for item in data:
+    for item in json_data:
+        data = []
+        if isinstance(item, dict):
+            for key, value in item.items():
+            # Handle different data types
+                if isinstance(value, list):
+                    # Join list elements as a comma-separated string
+                    value_str = ", ".join(str(item) for item in value)
+                elif value is None:
+                    value_str = "N/A"  # Handle null values
+                else:
+                    value_str = str(value)
+                
+                # Format each key-value pair
+                data.append(f"{key.replace('_', ' ').title()}: {value_str}")
+        
+            data_string = "\n".join(data)
+        
         # Generate embedding for the text using OpenAI
         try:
             response = openai_client.embeddings.create(
-                # TODO: replace with all text
-                input=item["text"],
+                input=data_string,
                 model="text-embedding-3-small"
             )
             embedding = response.data[0].embedding
@@ -83,13 +92,19 @@ def refresh_piencone(json_data):
             print(f"Error generating embedding for item {item['id']}: {e}")
             continue
         vectors.append({
-            # TODO: replace id with whatever url is
-            "id": item["id"],
+            "id": item["link"],
             "values": embedding,
-            # TODO: replace metadata with real metadata
             "metadata": {
-                "text": item["text"],
-                "genre": item.get("genre", "unknown")
+                "title": item.get("title", "N/A"),
+                "link": item.get("link", "N/A"),
+                "offered_by": item.get("offeredBy", "N/A"),
+                "amount": item.get("amount", "N/A"),
+                "grade_level": item.get("gradeLevel", "N/A"),
+                "deadline": item.get("deadline", "N/A"),
+                "scholarship_info": item.get("scholarshipInfo", "N/A"),
+                "eligibility_info": item.get("eligibilityInfo", "N/A"),
+                "application_info": item.get("applicationInfo", "N/A"),
+                "requirements": item.get("requirements", [])
             }
         })
     for i in range(0, len(vectors), batch_size):
@@ -99,37 +114,56 @@ def refresh_piencone(json_data):
             namespace="fundher-data")
         
 # Method to query pinecone database based on user data (should be given as json)
-def query_pinecone(data):
+def query_pinecone(json_data):
+    # To skip list
+    skip = ["gpa", "email", "first_name", "last_name"]
+    
+    data = []
+    for key, value in json_data.items():
+        if key in skip:
+            continue
+        # Handle different data types
+        if isinstance(value, list):
+            # Join list elements as a comma-separated string
+            value_str = ", ".join(str(item) for item in value)
+        elif value is None:
+            value_str = "N/A"  # Handle null values
+        else:
+            value_str = str(value)
+        
+        # Format each key-value pair
+        data.append(f"{key.replace('_', ' ').title()}: {value_str}")
+    
+    data_string = "\n".join(data)
     
     # Create user vector to query database
     try:
         response = openai_client.embeddings.create(
-            # TODO: turn data into string
-            input=data,
+            input=data_string,
             model="text-embedding-3-small"
         )
         embedding = response.data[0].embedding
     except Exception as e:
-        print(f"Error generating embedding for item {data['email']}: {e}")
-    user_vector = {
-        "id": data["email"],
-        "values": embedding,
-        # TODO: replace metadata with real metadata
-        "metadata": {
-            "first_name": data["first_name"],
-            "last_name": data["last_name"]
-        }
-    }
+        print(f"Error generating embedding for item {json_data['email']}: {e}")
+        return {"error": "Embedding generation failed"}
     
     # Query database based on user data
     response = pinecone_index.query(
         namespace="fundher-data",
-        vector=user_vector,
-        filter={
-            # Optional
-        },
-        top_k=20,
-        include_values=True
+        vector=embedding,
+        top_k=50,
+        include_values=True,
+        include_metadata=True
     )
     
     return response
+
+def get_fund(pinecone_id):
+    response = pinecone_index.query(
+        namespace="fundher-data",
+        id=pinecone_id,
+        top_k=1,
+        include_values=True,
+        include_metadata=True
+    )
+    return response.get("matches", [])[0].metadata
