@@ -116,7 +116,7 @@ def refresh_pinecone(filepath):
 # Method to query pinecone database based on user data (should be given as json)
 def query_pinecone(json_data):
     # To skip list
-    skip = ["gpa", "email", "first_name", "last_name"]
+    skip = ["gpa", "email", "first_name", "last_name", "interested", "applied", "rejected", "accepted"]
     
     data = []
     for key, value in json_data.items():
