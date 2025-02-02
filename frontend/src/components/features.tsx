@@ -9,25 +9,29 @@ const features = [
     id: 1,
     icon: money,
     feature: "Money",
-    description: "Money Money Money Money Money.",
+    description:
+      "Easily access and apply for scholarships, grants, and financial aid tailored for women.",
   },
   {
     id: 2,
     icon: match,
     feature: "Match",
-    description: "Match Match Match Match Match.",
+    description:
+      "AI-powered matching algorithm connects users with the scholarships and grants that best fit their profile",
   },
   {
     id: 3,
     icon: personal,
     feature: "Personal",
-    description: "Personal Personal Personal Personal Personal.",
+    description:
+      "Personalized recommendations based on users academic background and unique qualifications.",
   },
   {
     id: 4,
     icon: tracker,
     feature: "Tracker",
-    description: "Tracker Tracker Tracker Tracker Tracker Tracker.",
+    description:
+      "Stay organized and on top of scholarship applications with our intuitive tracking system.",
   },
 ];
 
