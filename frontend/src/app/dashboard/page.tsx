@@ -154,7 +154,7 @@ export default function Dashboard() {
                 <CircularProgress
                   variant="solid"
                   size="lg"
-                  value={recommendedScholarships[i].score * 100}
+                  value={Math.round((recommendedScholarships[i].score / 0.6) * 100)}
                   determinate
                   sx={{
                     "--CircularProgress-progressColor": "#A020F0",
