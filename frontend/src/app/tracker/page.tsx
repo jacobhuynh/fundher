@@ -276,50 +276,52 @@ export default function Tracker() {
                 <th style={{ backgroundColor: "#F0E6FF" }}>Mark as Rejected</th>
               </tr>
             </thead>
-            {appliedScholarships.length > 0 ? (
-              appliedScholarships.map((scholarship: Scholarship) => (
-                <tr key={scholarship.title}>
-                  <td>{scholarship.title}</td>
-                  <td>{scholarship.offered_by}</td>
-                  <td>{scholarship.amount}</td>
-                  <td>
-                    <Link
-                      underline="always"
-                      href={scholarship.link}
-                      target="_blank"
-                    >
-                      View Here
-                    </Link>
-                  </td>
-                  <td>
-                    <Checkbox
-                      sx={{ marginLeft: "30%" }}
-                      onChange={async () => {
-                        await sleep(500);
-                        setAppliedScholarships((prev) =>
-                          prev.filter((s) => s.title !== scholarship.title)
-                        );
-                        setAcceptedScholarships((prev) => [...prev, scholarship]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <Checkbox
-                      sx={{ marginLeft: "30%" }}
-                      onChange={async () => {
-                        await sleep(500);
-                        setAppliedScholarships((prev) =>
-                          prev.filter((s) => s.title !== scholarship.title)
-                        );
-                        setRejectedScholarships((prev) => [...prev, scholarship]);
-                      }}
-                    />
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <ListItem>No items</ListItem>
-            )}
+            <tbody>
+              {appliedScholarships.length > 0 ? (
+                appliedScholarships.map((scholarship: Scholarship) => (
+                  <tr key={scholarship.title}>
+                    <td>{scholarship.title}</td>
+                    <td>{scholarship.offered_by}</td>
+                    <td>{scholarship.amount}</td>
+                    <td>
+                      <Link
+                        underline="always"
+                        href={scholarship.link}
+                        target="_blank"
+                      >
+                        View Here
+                      </Link>
+                    </td>
+                    <td>
+                      <Checkbox
+                        sx={{ marginLeft: "30%" }}
+                        onChange={async () => {
+                          await sleep(500);
+                          setAppliedScholarships((prev) =>
+                            prev.filter((s) => s.title !== scholarship.title)
+                          );
+                          setAcceptedScholarships((prev) => [...prev, scholarship]);
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <Checkbox
+                        sx={{ marginLeft: "30%" }}
+                        onChange={async () => {
+                          await sleep(500);
+                          setAppliedScholarships((prev) =>
+                            prev.filter((s) => s.title !== scholarship.title)
+                          );
+                          setRejectedScholarships((prev) => [...prev, scholarship]);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <ListItem>No items</ListItem>
+              )}
+            </tbody>
           </Table>
         </TabPanel>
         <TabPanel value={2} sx={{ width: "20%" }}>
@@ -343,26 +345,28 @@ export default function Tracker() {
                 <th style={{ backgroundColor: "#F0E6FF" }}>Link</th>
               </tr>
             </thead>
-            {acceptedScholarships.length > 0 ? (
-              acceptedScholarships.map((scholarship: Scholarship) => (
-                <tr key={scholarship.title}>
-                  <td>{scholarship.title}</td>
-                  <td>{scholarship.offered_by}</td>
-                  <td>{scholarship.amount}</td>
-                  <td>
-                    <Link
-                      underline="always"
-                      href={scholarship.link}
-                      target="_blank"
-                    >
-                      View Here
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <ListItem>No items</ListItem>
-            )}
+            <tbody>
+              {acceptedScholarships.length > 0 ? (
+                acceptedScholarships.map((scholarship: Scholarship) => (
+                  <tr key={scholarship.title}>
+                    <td>{scholarship.title}</td>
+                    <td>{scholarship.offered_by}</td>
+                    <td>{scholarship.amount}</td>
+                    <td>
+                      <Link
+                        underline="always"
+                        href={scholarship.link}
+                        target="_blank"
+                      >
+                        View Here
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <ListItem>No items</ListItem>
+              )}
+            </tbody>
           </Table>
         </TabPanel>
         <TabPanel value={3} sx={{ width: "20%" }}>
@@ -386,26 +390,28 @@ export default function Tracker() {
                 <th style={{ backgroundColor: "#F0E6FF" }}>Link</th>
               </tr>
             </thead>
-            {rejectedScholarships.length > 0 ? (
-              rejectedScholarships.map((scholarship: Scholarship) => (
-                <tr key={scholarship.title}>
-                  <td>{scholarship.title}</td>
-                  <td>{scholarship.offered_by}</td>
-                  <td>{scholarship.amount}</td>
-                  <td>
-                    <Link
-                      underline="always"
-                      href={scholarship.link}
-                      target="_blank"
-                    >
-                      Apply Here
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <ListItem>No items</ListItem>
-            )}
+            <tbody>
+              {rejectedScholarships.length > 0 ? (
+                rejectedScholarships.map((scholarship: Scholarship) => (
+                  <tr key={scholarship.title}>
+                    <td>{scholarship.title}</td>
+                    <td>{scholarship.offered_by}</td>
+                    <td>{scholarship.amount}</td>
+                    <td>
+                      <Link
+                        underline="always"
+                        href={scholarship.link}
+                        target="_blank"
+                      >
+                        Apply Here
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <ListItem>No items</ListItem>
+              )}
+            </tbody>
           </Table>
         </TabPanel>
       </Tabs>

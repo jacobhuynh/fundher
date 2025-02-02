@@ -162,7 +162,7 @@ export default function Dashboard() {
                   }}
                 />
                 <p>
-                  {Math.round(recommendedScholarships[i].score * 100)}% Match
+                  {Math.round((recommendedScholarships[i].score / 0.6) * 100)}% Match
                 </p>
               </div>
               <CardContent sx={{ width: "50%", alignItems: "left" }}>
